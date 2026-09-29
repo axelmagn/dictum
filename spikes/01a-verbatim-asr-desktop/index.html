@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Verbatim ASR Spike</title>
+<style>
+:root {
+  --bg: #f7f7f5; --panel: #fff; --ink: #1d1d1b; --muted: #6b6b66; --line: #e2e1dc;
+  --accent: #2f5bd3; --filler: #ffe08a; --rep: #b8e3c9; --cut: #f5c2c0; --danger: #b3261e;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615; --panel: #1f1f1d; --ink: #ecebe6; --muted: #9a9993; --line: #34332f;
+    --accent: #7c9cff; --filler: #6b5616; --rep: #1f5a39; --cut: #6e2a27; --danger: #ff8a80;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; gap: 16px; align-items: baseline; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+header h1 { font-size: 16px; margin: 0; }
+header .status { color: var(--muted); }
+.warn { color: var(--danger); }
+.layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 49px); }
+aside { border-right: 1px solid var(--line); padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+main { padding: 16px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+button { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--panel); color: var(--ink); cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button.rec { background: var(--danger); border-color: var(--danger); color: #fff; }
+button:disabled { opacity: .5; cursor: default; }
+.muted { color: var(--muted); font-size: 12px; }
+.meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.meter > div { height: 100%; width: 0; background: var(--accent); transition: width 60ms; }
+.clips { list-style: none; padding: 0; margin: 0; }
+.clips li { padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+.clips li.sel { background: var(--panel); outline: 1px solid var(--line); font-weight: 600; }
+audio { width: 100%; }
+.bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+table.matrix { border-collapse: collapse; background: var(--panel); }
+table.matrix th, table.matrix td { border: 1px solid var(--line); padding: 4px 10px; text-align: center; }
+table.matrix th:first-child { text-align: left; }
+.cols { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; align-items: flex-start; }
+.col { flex: 0 0 340px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.col h3 { margin: 0; font-size: 13px; padding: 8px 10px 0; }
+.col .meta { padding: 0 10px 8px; border-bottom: 1px solid var(--line); }
+.col .text { padding: 10px; white-space: pre-wrap; font-size: 15px; line-height: 1.7; }
+.seg { cursor: pointer; border-radius: 3px; }
+.seg:hover { outline: 1px dashed var(--muted); }
+.ts { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.hide-ts .ts { display: none; }
+mark { color: inherit; border-radius: 3px; padding: 0 1px; }
+mark.f { background: var(--filler); }
+mark.r { background: var(--rep); }
+mark.c { background: var(--cut); }
+.legend mark { margin-right: 6px; }
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  aside { border-right: 0; border-bottom: 1px solid var(--line); }
+  .col { flex-basis: 85vw; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Verbatim ASR spike</h1>
+  <span class="status" id="status">loading…</span>
+</header>
+<div class="layout">
+  <aside>
+    <section>
+      <div class="bar">
+        <button id="recBtn" class="primary">● Record</button>
+        <span id="recTime" class="muted"></span>
+      </div>
+      <div class="meter" style="margin-top:8px"><div id="level"></div></div>
+      <div id="micInfo" class="muted" style="margin-top:6px"></div>
+    </section>
+    <section>
+      <label class="muted">or upload a file<br><input type="file" id="upload" accept="audio/*"></label>
+    </section>
+    <section>
+      <div class="muted">Clips</div>
+      <ul class="clips" id="clips"></ul>
+    </section>
+  </aside>
+  <main id="main"><p class="muted">Record or pick a clip.</p></main>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let state = { models: [], settings: [], clips: [] };
+let clip = null;
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, opts);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.statusText);
+  return j;
+}
+
+async function refresh() {
+  state = await api("/api/state");
+  $("#status").innerHTML = (state.cli ? "whisper-cli ready" : '<span class="warn">whisper-cli not built</span>')
+    + ` · ${state.models.length} model(s): ${state.models.map(m => esc(m.name)).join(", ") || "none"}`;
+  $("#clips").innerHTML = state.clips.map(c =>
+    `<li data-id="${c}" class="${clip && clip.id === c ? "sel" : ""}">${c}</li>`).join("");
+}
+$("#clips").onclick = e => { const id = e.target.dataset.id; if (id) location.hash = id; };
+window.onhashchange = () => openClip(location.hash.slice(1));
+
+async function openClip(id) {
+  if (!id) return;
+  clip = await api(`/api/clips/${id}`);
+  await refresh();
+  render();
+}
+
+// ---------- highlighting ----------
+const FILLER = /^(u+m+|u+h+m*|e+r+m*|h+m+|m+h?m+|a+h+|e+h+)$/;
+const STUTTER = /^(\w+)[-—–]+\1\b/i;
+const CUT = /\w[-—–]+$/;
+const norm = w => w.toLowerCase().replace(/[^\p{L}\p{N}']/gu, "");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const fmt = ms => { const s = ms / 1000; return `${Math.floor(s / 60)}:${(s % 60).toFixed(1).padStart(4, "0")}`; };
+
+// segments: [{from, to, text}] → {html, fillers, repeats}
+function highlight(segments) {
+  const toks = [];
+  segments.forEach((s, i) => s.text.split(/(\s+)/).forEach(t => {
+    if (t) toks.push({ t, seg: i, word: /\S/.test(t), n: norm(t), cls: "" });
+  }));
+  let fillers = 0, repeats = 0, prev = null;
+  for (const k of toks) {
+    if (!k.word) continue;
+    if (FILLER.test(k.n)) { k.cls = "f"; fillers++; }
+    else if (STUTTER.test(k.t)) { k.cls = "r"; repeats++; }
+    else if (prev && k.n && k.n === prev.n) { k.cls = "r"; if (!prev.cls) { prev.cls = "r"; repeats++; } else if (prev.cls !== "c") repeats++; }
+    else if (CUT.test(k.t)) { k.cls = "c"; repeats++; }
+    prev = k;
+  }
+  let html = "";
+  segments.forEach((s, i) => {
+    const inner = toks.filter(k => k.seg === i)
+      .map(k => k.cls ? `<mark class="${k.cls}">${esc(k.t)}</mark>` : esc(k.t)).join("");
+    html += s.from == null ? inner
+      : `<span class="seg" data-from="${s.from}" title="${fmt(s.from)}–${fmt(s.to)}"><span class="ts">[${fmt(s.from)}] </span>${inner}</span>`;
+  });
+  return { html, fillers, repeats };
+}
+
+// ---------- rendering ----------
+function render() {
+  const m = $("#main");
+  m.innerHTML = `
+    <div class="bar"><strong>${clip.id}</strong><span class="muted">${clip.duration.toFixed(1)} s</span></div>
+    <audio id="player" controls src="/api/clips/${clip.id}/audio"></audio>
+    <div class="bar" style="align-items:flex-start">
+      <table class="matrix"><thead><tr><th>model</th>${state.settings.map(s =>
+        `<th title="${esc(s.args.join(" "))}">${s.id}<br><span class="muted">${esc(s.label)}</span></th>`).join("")}</tr></thead>
+      <tbody>${state.models.map(md => `<tr><th>${esc(md.name)} <span class="muted">${md.size_mb} MB</span></th>${
+        state.settings.map(s => `<td><input type="checkbox" data-model="${esc(md.name)}" data-setting="${s.id}"></td>`).join("")}</tr>`).join("")}
+      </tbody></table>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <button id="runBtn" class="primary">Run checked</button>
+        <label class="muted"><input type="checkbox" id="tsToggle"> show timestamps</label>
+        <span id="runStatus" class="muted"></span>
+        <div class="legend muted"><mark class="f">filler</mark><mark class="r">repeat</mark><mark class="c">cut-off</mark></div>
+      </div>
+    </div>
+    <div class="cols hide-ts" id="cols"></div>`;
+  $("#runBtn").onclick = runChecked;
+  $("#tsToggle").onchange = e => $("#cols").classList.toggle("hide-ts", !e.target.checked);
+  $("#cols").onclick = e => {
+    const seg = e.target.closest(".seg");
+    if (seg) { const p = $("#player"); p.currentTime = seg.dataset.from / 1000; p.play(); }
+  };
+  renderCols();
+}
+
+function renderCols() {
+  const order = r => state.models.findIndex(m => m.name === r.model) * 10 + state.settings.findIndex(s => s.id === r.setting);
+  const runs = [...clip.runs].sort((a, b) => order(a) - order(b));
+  $("#cols").innerHTML = runs.length ? runs.map(r => { const h = highlight(r.segments); return `
+    <div class="col" data-key="${esc(r.model)}__${r.setting}"><h3>${esc(r.model)} · ${r.setting}</h3>
+      <div class="meta muted">${esc(r.label)} · ${r.size_mb} MB · RTF ${r.rtf} (${r.infer_s}s + load)<br>
+        ≈ ${h.fillers} fillers · ${h.repeats} repeats · ${esc(r.at)}</div>
+      <div class="text">${h.html || '<span class="muted">(empty)</span>'}</div></div>`; }).join("")
+    : '<p class="muted">No runs yet — tick some cells and hit Run.</p>';
+}
+
+async function runChecked() {
+  const cells = [...document.querySelectorAll(".matrix input:checked")].map(i => i.dataset);
+  if (!cells.length) return;
+  const btn = $("#runBtn"), st = $("#runStatus");
+  btn.disabled = true;
+  const id = clip.id;
+  for (const [i, c] of cells.entries()) {
+    st.textContent = `${i + 1}/${cells.length}: ${c.model} · ${c.setting}…`;
+    try {
+      const run = await api(`/api/clips/${id}/run`, { method: "POST",
+        body: JSON.stringify({ model: c.model, setting: c.setting }) });
+      if (clip.id !== id) continue;
+      clip.runs = clip.runs.filter(r => !(r.model === run.model && r.setting === run.setting)).concat(run);
+      renderCols();
+    } catch (e) {
+      st.innerHTML = `<span class="warn">${esc(c.model)} · ${c.setting}: ${esc(e.message)}</span>`;
+      btn.disabled = false;
+      return;
+    }
+  }
+  st.textContent = `done (${cells.length} run${cells.length > 1 ? "s" : ""})`;
+  btn.disabled = false;
+}
+
+// ---------- recording ----------
+let rec = null;
+$("#recBtn").onclick = async () => {
+  if (rec) return rec.stop();
+  // Browser DSP off: noise suppression can erase quiet fillers before the model hears them.
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: {
+    echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 } });
+  const track = stream.getAudioTracks()[0];
+  const s = track.getSettings();
+  const on = ["echoCancellation", "noiseSuppression", "autoGainControl"].filter(k => s[k]);
+  $("#micInfo").innerHTML = `${esc(track.label)}<br>` + (on.length
+    ? `<span class="warn">still on: ${on.join(", ")}</span>` : "browser DSP off ✓");
+
+  const mime = ["audio/webm;codecs=opus", "audio/ogg;codecs=opus", "audio/mp4"].find(t => MediaRecorder.isTypeSupported(t));
+  const chunks = [];
+  rec = new MediaRecorder(stream, { mimeType: mime, audioBitsPerSecond: 128000 });
+  rec.ondataavailable = e => chunks.push(e.data);
+
+  const ctx = new AudioContext(), an = ctx.createAnalyser(), buf = new Uint8Array(an.fftSize);
+  ctx.createMediaStreamSource(stream).connect(an);
+  const t0 = Date.now();
+  const tick = () => {
+    if (!rec) return;
+    an.getByteTimeDomainData(buf);
+    const peak = Math.max(...buf.map(v => Math.abs(v - 128))) / 128;
+    $("#level").style.width = `${Math.min(100, peak * 140)}%`;
+    const sec = (Date.now() - t0) / 1000;
+    $("#recTime").textContent = `${Math.floor(sec / 60)}:${String(Math.floor(sec % 60)).padStart(2, "0")}`;
+    requestAnimationFrame(tick);
+  };
+
+  rec.onstop = async () => {
+    rec = null;
+    stream.getTracks().forEach(t => t.stop());
+    ctx.close();
+    $("#level").style.width = "0";
+    $("#recBtn").textContent = "● Record";
+    $("#recBtn").className = "primary";
+    $("#recTime").textContent = "saving…";
+    const blob = new Blob(chunks, { type: mime });
+    await uploadBlob(blob, mime.split("/")[1].split(";")[0]);
+    $("#recTime").textContent = "";
+  };
+  rec.start(1000);
+  $("#recBtn").textContent = "■ Stop";
+  $("#recBtn").className = "rec";
+  tick();
+};
+
+$("#upload").onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  await uploadBlob(f, f.name.split(".").pop());
+  e.target.value = "";
+};
+
+async function uploadBlob(blob, ext) {
+  try {
+    const { id } = await api("/api/clips", { method: "POST", body: blob,
+      headers: { "Content-Type": blob.type || "application/octet-stream", "X-Ext": ext } });
+    location.hash = id;
+  } catch (e) { alert(e.message); }
+}
+
+refresh().then(() => openClip(location.hash.slice(1)));
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+audio/
+models/
+whisper.cpp/
+out/

@@ -1,0 +1,130 @@
+{
+  "runId": "medium.en-q5_0__C3__th4__clip8",
+  "device": {
+    "manufacturer": "Google",
+    "model": "Pixel 9a",
+    "socModel": "Tensor G4",
+    "totalRamBytes": 7938916352,
+    "androidRelease": "17",
+    "sdkInt": 37,
+    "cpuCoreCount": 8,
+    "externalFilesDir": "/storage/emulated/0/Android/data/dev.dictum.spike.app/files"
+  },
+  "systemInfo": "WHISPER : VITISAI = 0 | COREML = 0 | OPENVINO = 0 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | OPENMP = 1 | REPACK = 1 | ",
+  "model": "medium.en-q5_0",
+  "mode": "C3",
+  "threads": 4,
+  "audioFile": "clip8.wav",
+  "audioDurationSec": 202.9335,
+  "timings": {
+    "modelLoadTimeMs": 710,
+    "vadTimeMs": 0,
+    "transcribeWallTimeMs": 277136,
+    "totalWallTimeMs": 278025,
+    "rtf": 1.365649338330044
+  },
+  "memory": {
+    "peakRssKb": 1162500,
+    "peakRssMb": 1135.25390625,
+    "vmHwmKb": 1162500,
+    "vmHwmMb": 1135.25390625
+  },
+  "thermal": {
+    "thermalStart": 1,
+    "thermalEnd": 1
+  },
+  "battery": {
+    "batteryPercentStart": 61,
+    "batteryPercentEnd": 62,
+    "batteryDelta": -1
+  },
+  "perChunkTimeline": [],
+  "segmentCount": 17,
+  "segments": [
+    {
+      "t0": 0.0,
+      "t1": 30.0,
+      "text": " Oh, let's see, um... This month we went to a really lovely wedding in Portugal, and it was just this whole trip. We hit up, like, Delft in the Netherlands, which I love, and then went down to Porto, and then the wedding in the Douro Valley, and, uhm..."
+    },
+    {
+      "t0": 30.0,
+      "t1": 47.0,
+      "text": " From there to Barcelona. It was great. And then we had an absolutely hellish flight back, where everything got cancelled and delayed and the— the gate agents were fucking useless."
+    },
+    {
+      "t0": 61.0,
+      "t1": 76.0,
+      "text": " I've been thinking a lot about what I want to do next. And I'm not sure I have a good answer. I think it intersects..."
+    },
+    {
+      "t0": 83.0,
+      "t1": 99.0,
+      "text": " pretty heavily with my ADHD because I just keep jumping around from project to project. I just don't fucking know."
+    },
+    {
+      "t0": 100.0,
+      "t1": 107.0,
+      "text": " I should probably book another session with my therapist. I think I'm due for a therapy session."
+    },
+    {
+      "t0": 109.0,
+      "t1": 118.0,
+      "text": " And I just need to get that shit on the books. I think it was kind of a mistake to not work with them."
+    },
+    {
+      "t0": 119.0,
+      "t1": 128.0,
+      "text": " Well, I quit. I think I'm kind of overdue for that, but, um... you know."
+    },
+    {
+      "t0": 129.0,
+      "t1": 145.0,
+      "text": " Water under the bridge. I... I don't know. I just need a direction I can sink my teeth into and feel good about."
+    },
+    {
+      "t0": 146.0,
+      "t1": 148.0,
+      "text": " And I feel like it's time to set that direction."
+    },
+    {
+      "t0": 149.0,
+      "t1": 161.0,
+      "text": " I've got a bunch of different ideas of what that direction could be, but they're kind of just like rough ideas, and I need something that I can, like, commit to and live with."
+    },
+    {
+      "t0": 162.0,
+      "t1": 166.0,
+      "text": " I don't fuckin' know. I don't know what that is."
+    },
+    {
+      "t0": 169.0,
+      "t1": 188.0,
+      "text": " AI coding has been really good for when my brain's not working and letting me be lazy, but I'm still trying to wrap my head around what it is and kinda what it fuckin' means to me, you know?"
+    },
+    {
+      "t0": 190.0,
+      "t1": 192.0,
+      "text": " Um..."
+    },
+    {
+      "t0": 194.0,
+      "t1": 196.0,
+      "text": " I don't..."
+    },
+    {
+      "t0": 197.0,
+      "t1": 199.0,
+      "text": " I don't..."
+    },
+    {
+      "t0": 199.0,
+      "t1": 201.0,
+      "text": " I don't know."
+    },
+    {
+      "t0": 201.0,
+      "t1": 203.0,
+      "text": " That's it."
+    }
+  ]
+}

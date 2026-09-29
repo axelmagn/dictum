@@ -1,0 +1,105 @@
+{
+  "timestamp": "2026-09-29T12:18:13.892841",
+  "benchmarkType": "phonetic_test_script",
+  "device": "Google Pixel 9a (Tensor G4)",
+  "model": "ggml-small.en-q5_0.bin",
+  "vad": "ggml-silero-v6.2.0.bin (Streaming)",
+  "summary": {
+    "medianTLagSec": 13.331,
+    "maxTLagSec": 22.345,
+    "averageRtf": 2.0420030619596536,
+    "bufferOverrunCount": 0,
+    "peakRssMb": 549.4140625,
+    "thermalStatus": 0,
+    "clockDiscrepancyPercent": 0.0012321097661948507,
+    "tLagPass": false,
+    "audioIntegrityPass": true,
+    "fillerPass": true,
+    "fillerRetainedCount": 5,
+    "fillerTotalCount": 6,
+    "fillerRetainedPercent": 83.33333333333334
+  },
+  "fillerDetails": {
+    "Um (initial)": true,
+    "uh": true,
+    "I— I": true,
+    "Hmm...": false,
+    "you know": true,
+    "um (final)": true
+  },
+  "chunks": [
+    {
+      "index": 0,
+      "t0": 0.0,
+      "t1": 1.6,
+      "duration": 1.6,
+      "tLagSec": 5.108,
+      "rtf": 3.19039125,
+      "text": "Um, hello."
+    },
+    {
+      "index": 1,
+      "t0": 1.952,
+      "t1": 3.552,
+      "duration": 1.6,
+      "tLagSec": 8.521,
+      "rtf": 3.3517743749999998,
+      "text": "I am testing."
+    },
+    {
+      "index": 2,
+      "t0": 3.744,
+      "t1": 6.656000000000001,
+      "duration": 2.912,
+      "tLagSec": 11.05,
+      "rtf": 1.9352544642857143,
+      "text": "Uh, testing the new prototype."
+    },
+    {
+      "index": 3,
+      "t0": 7.072,
+      "t1": 11.296,
+      "duration": 4.224,
+      "tLagSec": 12.264,
+      "rtf": 1.3856910511363636,
+      "text": "I— I want to see if it catches my pauses."
+    },
+    {
+      "index": 4,
+      "t0": 11.84,
+      "t1": 14.943999999999999,
+      "duration": 3.104,
+      "tLagSec": 14.398,
+      "rtf": 1.862978737113402,
+      "text": "Um, like, you know."
+    },
+    {
+      "index": 5,
+      "t0": 15.136,
+      "t1": 16.992,
+      "duration": 1.856,
+      "tLagSec": 18.16,
+      "rtf": 3.1297634698275862,
+      "text": "When I stop to think."
+    },
+    {
+      "index": 6,
+      "t0": 17.184,
+      "t1": 20.448,
+      "duration": 3.264,
+      "tLagSec": 20.573,
+      "rtf": 1.7980422794117648,
+      "text": "Uh, does it keep every single word?"
+    },
+    {
+      "index": 7,
+      "t0": 20.96,
+      "t1": 24.608,
+      "duration": 3.648,
+      "tLagSec": 22.345,
+      "rtf": 1.6262012061403508,
+      "text": "That's, um, that's the whole question."
+    }
+  ],
+  "fullTranscript": "Um, hello. I am testing. Uh, testing the new prototype. I— I want to see if it catches my pauses. Um, like, you know. When I stop to think. Uh, does it keep every single word? That's, um, that's the whole question."
+}

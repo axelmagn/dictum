@@ -1,0 +1,209 @@
+{
+  "runId": "small.en-q5_0__C2__th4__clip8",
+  "device": {
+    "manufacturer": "Google",
+    "model": "Pixel 9a",
+    "socModel": "Tensor G4",
+    "totalRamBytes": 7938916352,
+    "androidRelease": "17",
+    "sdkInt": 37,
+    "cpuCoreCount": 8,
+    "externalFilesDir": "/storage/emulated/0/Android/data/dev.dictum.spike.app/files"
+  },
+  "systemInfo": "WHISPER : VITISAI = 0 | COREML = 0 | OPENVINO = 0 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | OPENMP = 1 | REPACK = 1 | ",
+  "model": "small.en-q5_0",
+  "mode": "C2",
+  "threads": 4,
+  "audioFile": "clip8.wav",
+  "audioDurationSec": 202.9335,
+  "timings": {
+    "modelLoadTimeMs": 261,
+    "vadTimeMs": 562,
+    "transcribeWallTimeMs": 78354,
+    "totalWallTimeMs": 79275,
+    "rtf": 0.3861067788216337
+  },
+  "memory": {
+    "peakRssKb": 700532,
+    "peakRssMb": 684.11328125,
+    "vmHwmKb": 700532,
+    "vmHwmMb": 684.11328125
+  },
+  "thermal": {
+    "thermalStart": 0,
+    "thermalEnd": 1
+  },
+  "battery": {
+    "batteryPercentStart": 49,
+    "batteryPercentEnd": 50,
+    "batteryDelta": -1
+  },
+  "perChunkTimeline": [
+    {
+      "chunkIndex": 0,
+      "startSec": 0.0,
+      "endSec": 30.140000343322754,
+      "durationSec": 30.140000343322754,
+      "wallTimeMs": 13772,
+      "rtf": 0.4569343013644345,
+      "segmentCount": 2
+    },
+    {
+      "chunkIndex": 1,
+      "startSec": 30.140000343322754,
+      "endSec": 53.970001220703125,
+      "durationSec": 23.83000087738037,
+      "wallTimeMs": 7665,
+      "rtf": 0.3216533662521045,
+      "segmentCount": 1
+    },
+    {
+      "chunkIndex": 2,
+      "startSec": 53.970001220703125,
+      "endSec": 89.375,
+      "durationSec": 35.404998779296875,
+      "wallTimeMs": 15601,
+      "rtf": 0.44064399203207166,
+      "segmentCount": 3
+    },
+    {
+      "chunkIndex": 3,
+      "startSec": 89.375,
+      "endSec": 118.73500061035156,
+      "durationSec": 29.360000610351562,
+      "wallTimeMs": 8523,
+      "rtf": 0.2902929094965691,
+      "segmentCount": 1
+    },
+    {
+      "chunkIndex": 4,
+      "startSec": 118.73500061035156,
+      "endSec": 149.41000366210938,
+      "durationSec": 30.675003051757812,
+      "wallTimeMs": 15662,
+      "rtf": 0.51057859631093,
+      "segmentCount": 5
+    },
+    {
+      "chunkIndex": 5,
+      "startSec": 149.41000366210938,
+      "endSec": 177.98499298095703,
+      "durationSec": 28.574989318847656,
+      "wallTimeMs": 8601,
+      "rtf": 0.3009974878390209,
+      "segmentCount": 1
+    },
+    {
+      "chunkIndex": 6,
+      "startSec": 177.98499298095703,
+      "endSec": 202.9335,
+      "durationSec": 24.948507019042978,
+      "wallTimeMs": 8516,
+      "rtf": 0.3413430708899659,
+      "segmentCount": 7
+    }
+  ],
+  "segmentCount": 20,
+  "segments": [
+    {
+      "t0": 0.0,
+      "t1": 16.0,
+      "text": " Oh, let's see, um... This month we went to a really lovely wedding in Portugal, and it was just this whole trip."
+    },
+    {
+      "t0": 16.0,
+      "t1": 30.0,
+      "text": " We hit up, like, Delft in the Netherlands, which I love, and then went down to Porto, and then the wedding in the Duro Valley, and, um..."
+    },
+    {
+      "t0": 30.140000343322754,
+      "t1": 60.140000343322754,
+      "text": "-from there to Barcelona. That was great. And then we had an absolutely hellish flight back, where everything got cancelled and delayed and the-the gate agents were fucking useless."
+    },
+    {
+      "t0": 53.970001220703125,
+      "t1": 72.17000122070313,
+      "text": " I've been thinking a lot about what I want to do next, and I'm not sure I have a good"
+    },
+    {
+      "t0": 72.17000122070313,
+      "t1": 73.17000122070313,
+      "text": " answer."
+    },
+    {
+      "t0": 73.17000122070313,
+      "t1": 88.81000122070313,
+      "text": " I think it intersects pretty heavily with my ADHD."
+    },
+    {
+      "t0": 89.375,
+      "t1": 119.375,
+      "text": "- because I just keep jumping around from project to project, I just don't fucking know. I should probably book another session with my therapist, I think I'm due for a therapy session. And I just need to get that shit on the books. I think it was kind of a mistake to not work with him."
+    },
+    {
+      "t0": 118.73500061035156,
+      "t1": 127.73500061035156,
+      "text": " Well, I quit. I think I'm kind of overdue for that, but, um... you know."
+    },
+    {
+      "t0": 129.73500061035156,
+      "t1": 131.73500061035156,
+      "text": " Water under the bridge."
+    },
+    {
+      "t0": 134.73500061035156,
+      "t1": 136.73500061035156,
+      "text": " I..."
+    },
+    {
+      "t0": 139.73500061035156,
+      "t1": 145.73500061035156,
+      "text": " I don't know. I just need a direction I can sink my teeth into and feel good about."
+    },
+    {
+      "t0": 145.73500061035156,
+      "t1": 148.13500061035157,
+      "text": " and I feel like it's time to set that direction."
+    },
+    {
+      "t0": 149.41000366210938,
+      "t1": 179.41000366210938,
+      "text": "- I've got a bunch of different ideas of what that direction could be, but they're kinda just like rough ideas, and I need something that I can like, commit to, and live with. I don't fuckin' know. I don't know what that is. AI coding has been really good for... when my brain's not working."
+    },
+    {
+      "t0": 177.98499298095703,
+      "t1": 183.58499298095703,
+      "text": " And letting me be lazy, but I'm still trying to wrap my head around what it is, and kinda..."
+    },
+    {
+      "t0": 185.18499298095702,
+      "t1": 187.18499298095702,
+      "text": " what it fucking means to me, you know?"
+    },
+    {
+      "t0": 190.68499298095702,
+      "t1": 191.68499298095702,
+      "text": " Um..."
+    },
+    {
+      "t0": 194.48499298095703,
+      "t1": 195.48499298095703,
+      "text": " I don't..."
+    },
+    {
+      "t0": 196.98499298095703,
+      "t1": 197.98499298095703,
+      "text": " I don't..."
+    },
+    {
+      "t0": 199.48499298095703,
+      "t1": 200.48499298095703,
+      "text": " I don't know."
+    },
+    {
+      "t0": 201.68499298095702,
+      "t1": 202.68499298095702,
+      "text": " That's it."
+    }
+  ]
+}
